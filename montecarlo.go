@@ -26,7 +26,6 @@ func PI(samples int) float64 {
 
 func MultiPI(samples int) float64 {
 	cpus := runtime.NumCPU()
-	runtime.GOMAXPROCS(cpus)
 
 	threadSamples := samples / cpus
 	results := make(chan float64, cpus)
@@ -54,6 +53,10 @@ func MultiPI(samples int) float64 {
 	}
 
 	return total / float64(cpus)
+}
+
+func init() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
 func main() {
