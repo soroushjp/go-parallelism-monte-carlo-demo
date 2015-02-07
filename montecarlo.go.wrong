@@ -35,11 +35,10 @@ func GetPiMulti(samples int, threadcount int) float64 {
 			var pi float64
 			var inside int = 0
 			var threadSamples = samples / threadcount
-			r := rand.New(rand.NewSource(time.Now().UnixNano()))
 			for i := 0; i < threadSamples; i++ {
-				r.Seed(time.Now().UnixNano())
-				x := r.Float64()
-				y := r.Float64()
+				rand.Seed(time.Now().UnixNano())
+				x := rand.Float64()
+				y := rand.Float64()
 				if (x*x + y*y) < 1 {
 					inside++
 				}
