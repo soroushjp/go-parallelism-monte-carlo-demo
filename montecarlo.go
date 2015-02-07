@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"runtime"
-	"sync"
 	"time"
 )
 
@@ -31,12 +30,9 @@ func GetPiMulti(samples int) float64 {
 	runtime.GOMAXPROCS(NCPU)
 
 	results := make(chan float64, NCPU)
-	wg := sync.WaitGroup{}
 
 	for j := 0; j < NCPU; j++ {
 		go func() {
-			wg.Add(1)
-			defer wg.Done()
 			var pi float64
 			var inside int = 0
 			var threadSamples = samples / NCPU
@@ -52,7 +48,6 @@ func GetPiMulti(samples int) float64 {
 		}()
 	}
 
-	wg.Wait()
 	var piTotal float64
 	for t := 0; t < NCPU; t++ {
 		piTotal += <-results
