@@ -8,14 +8,16 @@ import (
 	"time"
 )
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
 func GetPi(samples int) float64 {
 	var inside int = 0
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	for i := 0; i < samples; i++ {
-		r.Seed(time.Now().UnixNano())
-		x := r.Float64()
-		y := r.Float64()
+		x := rand.Float64()
+		y := rand.Float64()
 		if (x*x + y*y) < 1 {
 			inside++
 		}
@@ -38,11 +40,9 @@ func GetPiMulti(samples int) float64 {
 			var pi float64
 			var inside int = 0
 			var threadSamples = samples / NCPU
-			r := rand.New(rand.NewSource(time.Now().UnixNano()))
 			for i := 0; i < threadSamples; i++ {
-				r.Seed(time.Now().UnixNano())
-				x := r.Float64()
-				y := r.Float64()
+				x := rand.Float64()
+				y := rand.Float64()
 				if (x*x + y*y) < 1 {
 					inside++
 				}
