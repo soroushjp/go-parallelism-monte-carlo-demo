@@ -4,16 +4,16 @@ import (
 	"testing"
 )
 
-const sampleCount = 1000000
+const samples = 1000000
 
-func BenchmarkGetPi(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		GetPi(sampleCount)
+func BenchmarkPI(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		PI(samples)
 	}
 }
 
-func BenchmarkGetPiMulti(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		GetPiMulti(sampleCount)
+func BenchmarkMultiPI(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		MultiPI(samples)
 	}
 }

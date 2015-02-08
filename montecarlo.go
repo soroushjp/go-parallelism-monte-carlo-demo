@@ -7,11 +7,7 @@ import (
 	"time"
 )
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
-
-func GetPi(samples int) float64 {
+func PI(samples int) float64 {
 	var inside int = 0
 
 	for i := 0; i < samples; i++ {
@@ -22,47 +18,46 @@ func GetPi(samples int) float64 {
 		}
 	}
 
-	return float64(inside) / float64(samples) * 4
+	ratio := float64(inside) / float64(samples)
+
+	return ratio * 4
 }
 
-func GetPiMulti(samples int) float64 {
-	NCPU := runtime.NumCPU()
-	runtime.GOMAXPROCS(NCPU)
+func MultiPI(samples int) float64 {
+	cpus := runtime.NumCPU()
 
-	results := make(chan float64, NCPU)
+	threadSamples := samples / cpus
+	results := make(chan float64, cpus)
 
-	for j := 0; j < NCPU; j++ {
+	for j := 0; j < cpus; j++ {
 		go func() {
-			var pi float64
-			var inside int = 0
-			var threadSamples = samples / NCPU
+			var inside int
+			r := rand.New(rand.NewSource(time.Now().UnixNano()))
 			for i := 0; i < threadSamples; i++ {
-				x := rand.Float64()
-				y := rand.Float64()
-				if (x*x + y*y) < 1 {
+				x, y := r.Float64(), r.Float64()
+
+				if x*x+y*y <= 1 {
 					inside++
 				}
 			}
-			pi = float64(inside) / float64(threadSamples) * 4
-			results <- pi
+			results <- float64(inside) / float64(threadSamples) * 4
 		}()
 	}
 
-	var piTotal float64
-	for t := 0; t < NCPU; t++ {
-		piTotal += <-results
+	var total float64
+	for i := 0; i < cpus; i++ {
+		total += <-results
 	}
-	pi := piTotal / float64(NCPU)
 
-	return pi
+	return total / float64(cpus)
+}
+
+func init() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
 func main() {
-	fmt.Println("Our value of Pi after 100 runs:\t\t\t\t\t", GetPi(100))
-	fmt.Println("Our value of Pi after 1,000 runs:\t\t\t\t", GetPi(1000))
-	fmt.Println("Our value of Pi after 10,000 runs:\t\t\t\t", GetPi(10000))
-	fmt.Println("Our value of Pi after 100,000 runs:\t\t\t\t", GetPi(100000))
-	fmt.Println("Our value of Pi after 1,000,000 runs:\t\t\t\t", GetPi(1000000))
-
-	fmt.Println("Our value of Pi after 1,000,000 runs: (multithreaded)\t\t", GetPiMulti(1000000))
+	fmt.Println("Running Monte Carlo simulations ...\n")
+	fmt.Println("Our value of Pi after 1,000,000 runs:\t\t", PI(1000000))
+	fmt.Println("Our value of Pi after 1,000,000 runs (MT):\t", MultiPI(1000000))
 }
