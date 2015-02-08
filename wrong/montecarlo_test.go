@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-const samples = 1000000
+const samples = 10000000
 
 func BenchmarkPI(b *testing.B) {
 	for i := 0; i < b.N; i++ {
