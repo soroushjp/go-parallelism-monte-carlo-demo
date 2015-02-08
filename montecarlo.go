@@ -54,6 +54,7 @@ func MultiPI(samples int) float64 {
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	rand.Seed(time.Now().UnixNano())
 }
 
 func main() {
