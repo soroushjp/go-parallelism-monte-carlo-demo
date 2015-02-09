@@ -10,9 +10,10 @@ import (
 func PI(samples int) float64 {
 	var inside int = 0
 
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0; i < samples; i++ {
-		x := rand.Float64()
-		y := rand.Float64()
+		x := r.Float64()
+		y := r.Float64()
 		if (x*x + y*y) < 1 {
 			inside++
 		}
@@ -54,7 +55,6 @@ func MultiPI(samples int) float64 {
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	rand.Seed(time.Now().UnixNano())
 }
 
 func main() {
